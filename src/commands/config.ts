@@ -10,7 +10,6 @@ const command: GluegunCommand = {
     switch (subCommand) {
       case 'user.token':
         print.info(parameters);
-
         break;
 
       case 'user.access':
