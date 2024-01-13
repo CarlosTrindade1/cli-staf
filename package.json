@@ -28,12 +28,16 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "cli-spinner": "^0.2.10",
     "gluegun": "latest",
+    "picocolors": "^1.0.0",
+    "prompts": "^2.4.2",
     "yarn": "^1.22.21"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
     "@types/node": "^12.7.11",
+    "@types/prompts": "^2.4.9",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "@typescript-eslint/parser": "^4.17.0",
     "copyfiles": "^2.4.1",

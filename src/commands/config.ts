@@ -1,24 +1,39 @@
 import { GluegunCommand } from 'gluegun';
+import { bgGreen, bgRed, white } from 'picocolors';
+import { configService } from '../core/config-service';
+import { prompt } from 'prompts';
 
 const command: GluegunCommand = {
   name: 'config',
   run: async (toolbox) => {
-    const { print, parameters } = toolbox;
+    const { print } = toolbox;
 
-    const subCommand = parameters.first;
+    const { token } = await prompt({
+      type: 'text',
+      name: 'token',
+      message: 'Informe o auth token',
+      validate: (arg: string) => (!arg ? 'Informe um token válido' : true),
+    });
 
-    switch (subCommand) {
-      case 'user.token':
-        print.info(parameters);
-        break;
+    const { userAccess } = await prompt({
+      type: 'text',
+      name: 'userAccess',
+      message: 'Informe o user-access',
+      validate: (arg: string) =>
+        !arg ? 'Informe um user access válido' : true,
+    });
 
-      case 'user.access':
-        print.info(parameters);
-        break;
+    try {
+      await configService.saveToken(token);
+      await configService.saveUserAccess(userAccess);
 
-      default:
-        print.info('Comando não encontrado');
-        break;
+      return print.success(
+        `${bgGreen(`${white(' Configurações armazenadas com sucesso! ')}`)}`
+      );
+    } catch (error) {
+      return print.error(
+        `${bgRed(`${white(' Ocorreu um erro inesperado. ')}`)}`
+      );
     }
   },
 };
