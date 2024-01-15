@@ -27,6 +27,6 @@ export class PersistService implements IPersistService {
   }
 
   public async saveUserAccess(userAccess: string): Promise<void> {
-    // ...
+    await storage.setItem('userAccess', userAccess);
   }
 }

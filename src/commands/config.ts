@@ -31,6 +31,7 @@ const command: GluegunCommand = {
         `${bgGreen(`${white(' Configurações armazenadas com sucesso! ')}`)}`
       );
     } catch (error) {
+      console.log(error);
       return print.error(
         `${bgRed(`${white(' Ocorreu um erro inesperado. ')}`)}`
       );
