@@ -87,10 +87,16 @@ export class PersistService implements IPersistService {
   ): Promise<ScriptsStorage | undefined> {
     await this.init();
 
-    const scripts: ScriptsStorage[] = await storage.getItem('script');
+    let scripts: ScriptsStorage[] = await storage.getItem('script');
 
-    const script = scripts.find((script) => script.name === scriptName);
+    if (!scripts) scripts = [];
+
+    const script = scripts.find((script) => script.name == scriptName);
 
     return script;
+  }
+
+  public async getAllScripts(): Promise<ScriptsStorage[]> {
+    return await storage.getItem('script');
   }
 }

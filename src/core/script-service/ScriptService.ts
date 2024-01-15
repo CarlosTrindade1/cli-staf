@@ -1,4 +1,7 @@
-import { PersistService } from '../persist-service/PersistService';
+import {
+  PersistService,
+  ScriptsStorage,
+} from '../persist-service/PersistService';
 import { IApiService } from './services/IApiService';
 import { IFileService } from './services/IFileService';
 
@@ -38,5 +41,35 @@ export class ScriptService {
     }
 
     await this.persistService.addScript(scriptId, scriptName);
+  }
+
+  public async pushScript(scriptNames: string[]): Promise<void> {
+    const scripts: ScriptsStorage[] = [];
+
+    if (scriptNames) {
+      for (const name of scriptNames) {
+        scripts.push(await this.persistService.getScript(name));
+      }
+    } else {
+      scripts.push(...(await this.persistService.getAllScripts()));
+    }
+
+    if (!scripts) {
+      throw Error('Não há scripts a serem enviados.');
+    }
+
+    scripts.forEach(async (script) => {
+      const path = await this.persistService.getPath();
+      const fileName = script.name;
+
+      const fileContent = await this.fileService.readFile(
+        `${path}${fileName}.groovy`
+      );
+
+      await this.apiService.putScript(script.id, fileContent, {
+        token: await this.persistService.getToken(),
+        userAccess: await this.persistService.getUserAccess(),
+      });
+    });
   }
 }

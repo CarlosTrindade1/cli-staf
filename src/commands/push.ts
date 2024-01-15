@@ -2,18 +2,16 @@ import { GluegunCommand } from 'gluegun';
 import { scriptService } from '../core/script-service';
 
 const command: GluegunCommand = {
-  name: 'pull',
+  name: 'push',
   run: async (toolbox) => {
     const { print, parameters } = toolbox;
 
-    const scriptName = parameters.first;
-
-    if (!scriptName) {
-      return print.error('Nome de script inálido');
+    if (!parameters.array) {
+      return print.error('É necessário informar pelo menos 1 nome de arquivo.');
     }
 
     try {
-      await scriptService.getScript(scriptName);
+      await scriptService.pushScript(parameters.array);
     } catch (error) {
       return print.error(error.message);
     }
