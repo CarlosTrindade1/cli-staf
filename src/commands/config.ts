@@ -23,9 +23,16 @@ const command: GluegunCommand = {
         !arg ? 'Informe um user access válido' : true,
     });
 
+    const { path } = await prompt({
+      type: 'text',
+      name: 'path',
+      message: 'Informe o diretório de saída de arquivos (outDir):',
+    });
+
     try {
       await configService.saveToken(token);
       await configService.saveUserAccess(userAccess);
+      await configService.savePath(path);
 
       return print.success(
         `${bgGreen(`${white(' Configurações armazenadas com sucesso! ')}`)}`

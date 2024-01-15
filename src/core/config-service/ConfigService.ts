@@ -11,4 +11,8 @@ export class ConfigService implements IConfigService {
   public async saveUserAccess(userAccess: string): Promise<void> {
     await this.persistService.saveUserAccess(userAccess);
   }
+
+  public async savePath(path: string): Promise<void> {
+    await this.persistService.setPath(path);
+  }
 }
