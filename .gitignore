@@ -6,4 +6,4 @@ coverage
 dist
 build
 .vscode
-./src/core/persist-service/storage
+src/core/persist-service/storage

@@ -72,4 +72,19 @@ export class ScriptService {
       });
     });
   }
+
+  public async runScript(scriptName: string): Promise<string> {
+    const script = await this.persistService.getScript(scriptName);
+
+    if (!script) {
+      throw Error('Não foi encontrado um script com este nome.');
+    }
+
+    const response = await this.apiService.runScript(script.id, {
+      token: await this.persistService.getToken(),
+      userAccess: await this.persistService.getUserAccess(),
+    });
+
+    return response;
+  }
 }

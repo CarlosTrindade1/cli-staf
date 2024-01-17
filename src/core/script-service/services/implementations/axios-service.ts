@@ -49,4 +49,33 @@ export class AxiosService implements IApiService {
       },
     });
   }
+
+  public async runScript(
+    idScript: string,
+    credentials: {
+      token: string;
+      userAccess: string;
+    }
+  ): Promise<string> {
+    const { data } = await this.getScript(idScript, credentials);
+
+    const draftId = data.id;
+
+    const form = new FormData();
+
+    const response = await this.api({
+      url: `${this.draftBaseUrl}/${draftId}/acoes/executar`,
+      method: 'POST',
+      headers: {
+        authorization: credentials.token,
+        'Content-Type': 'multipart/form-data',
+        'user-access': credentials.userAccess,
+      },
+      data: form,
+    });
+
+    console.log(response.data);
+
+    return '';
+  }
 }

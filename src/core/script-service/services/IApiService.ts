@@ -11,4 +11,11 @@ export interface IApiService {
     fileContent: string,
     credentials: { token: string; userAccess: string }
   ): Promise<void>;
+  runScript(
+    idScript: string,
+    credentials: {
+      token: string;
+      userAccess: string;
+    }
+  ): Promise<string>;
 }
