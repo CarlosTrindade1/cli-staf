@@ -73,6 +73,41 @@ export class ScriptService {
     });
   }
 
+  private async watchExecution(executionCode: string): Promise<boolean> {
+    return await new Promise((resolve, reject) => {
+      const interval = setInterval(
+        async (executionCode: string) => {
+          if (
+            await this.apiService.consultExecution(executionCode, {
+              token: await this.persistService.getToken(),
+              userAccess: await this.persistService.getUserAccess(),
+            })
+          ) {
+            clearInterval(interval);
+            resolve(true);
+          }
+        },
+        5000,
+        executionCode
+      );
+    });
+  }
+
+  private async getLogExecution(executionCode: string): Promise<string> {
+    const response = await this.apiService.getLogStream(executionCode, {
+      token: await this.persistService.getToken(),
+      userAccess: await this.persistService.getUserAccess(),
+    });
+
+    let content = '';
+
+    for (const event of response.events) {
+      content += event.message + '\n';
+    }
+
+    return content;
+  }
+
   public async runScript(scriptName: string): Promise<string> {
     const script = await this.persistService.getScript(scriptName);
 
@@ -80,11 +115,17 @@ export class ScriptService {
       throw Error('Não foi encontrado um script com este nome.');
     }
 
-    const response = await this.apiService.runScript(script.id, {
+    const executionCode = await this.apiService.runScript(script.id, {
       token: await this.persistService.getToken(),
       userAccess: await this.persistService.getUserAccess(),
     });
 
-    return response;
+    const completed = await this.watchExecution(executionCode);
+
+    if (completed) {
+      return await this.getLogExecution(executionCode);
+    }
+
+    return '';
   }
 }

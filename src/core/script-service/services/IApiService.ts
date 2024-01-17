@@ -18,4 +18,18 @@ export interface IApiService {
       userAccess: string;
     }
   ): Promise<string>;
+  consultExecution(
+    executionCode: string,
+    credentials: {
+      token: string;
+      userAccess: string;
+    }
+  ): Promise<boolean>;
+  getLogStream(
+    executionCode: string,
+    credentials: {
+      token: string;
+      userAccess: string;
+    }
+  ): Promise<any>;
 }

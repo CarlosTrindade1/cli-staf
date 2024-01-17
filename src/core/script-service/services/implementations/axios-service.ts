@@ -8,6 +8,12 @@ export class AxiosService implements IApiService {
   private readonly draftBaseUrl =
     'https://plataforma-scripts.betha.cloud/scripts/v1/api/rascunhos';
 
+  private readonly consultBaseUrl =
+    'https://plataforma-execucoes.betha.cloud/v1/consulta/api/protocolo';
+
+  private readonly logStreamBaseUrl =
+    'https://plataforma-execucoes.betha.cloud/v1/api/execucoes';
+
   public async getScript(
     idScript: string,
     credentials: { token: string; userAccess: string }
@@ -74,8 +80,56 @@ export class AxiosService implements IApiService {
       data: form,
     });
 
-    console.log(response.data);
+    if (response.data.error) {
+      let message = '';
 
-    return '';
+      for (const error of response.data.errors) {
+        message += `${error.message} (${error.lineNumber}:${error.columnNumber})\n`;
+      }
+
+      throw Error(message);
+    }
+
+    return response.data.codigoExecucao;
+  }
+
+  public async consultExecution(
+    executionCode: string,
+    credentials: {
+      token: string;
+      userAccess: string;
+    }
+  ): Promise<boolean> {
+    const { data } = await this.api.get(
+      `${this.consultBaseUrl}/${executionCode}`,
+      {
+        headers: {
+          authorization: credentials.token,
+          'user-access': credentials.userAccess,
+        },
+      }
+    );
+
+    return data.concluida;
+  }
+
+  public async getLogStream(
+    executionCode: string,
+    credentials: {
+      token: string;
+      userAccess: string;
+    }
+  ): Promise<any> {
+    const { data } = await this.api.get(
+      `${this.logStreamBaseUrl}/${executionCode}/log-stream`,
+      {
+        headers: {
+          authorization: credentials.token,
+          'user-access': credentials.userAccess,
+        },
+      }
+    );
+
+    return data;
   }
 }
