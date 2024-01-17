@@ -8,7 +8,7 @@ const command: GluegunCommand = {
     const { print, parameters } = toolbox;
 
     const spinner = new Spinner('%s executando');
-    spinner.setSpinnerString('|/-\\');
+    spinner.setSpinnerString('⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏');
 
     if (!parameters.first) {
       return print.error('Informe um arquivo para ser executado!');
