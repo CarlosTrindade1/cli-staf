@@ -1,3 +1,4 @@
+import { Options } from 'gluegun/build/types/domain/options';
 import {
   PersistService,
   ScriptsStorage,
@@ -27,7 +28,7 @@ export class ScriptService {
     await this.fileService.writeNewFile(
       response?.data?.codigoFonte,
       await this.persistService.getPath(),
-      script.name
+      script.name + '.groovy'
     );
   }
 
@@ -108,7 +109,10 @@ export class ScriptService {
     return content;
   }
 
-  public async runScript(scriptName: string): Promise<string> {
+  public async runScript(
+    scriptName: string,
+    options: Options
+  ): Promise<string | void> {
     const script = await this.persistService.getScript(scriptName);
 
     if (!script) {
@@ -123,9 +127,15 @@ export class ScriptService {
     const completed = await this.watchExecution(executionCode);
 
     if (completed) {
-      return await this.getLogExecution(executionCode);
-    }
+      const log = await this.getLogExecution(executionCode);
 
-    return '';
+      if (!options.file) return log;
+
+      await this.fileService.writeNewFile(
+        log,
+        await this.persistService.getPath(),
+        script.name + '-log.txt'
+      );
+    }
   }
 }

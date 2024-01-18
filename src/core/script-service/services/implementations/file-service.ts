@@ -7,7 +7,7 @@ export class FileService implements IFileService {
     path: string,
     fileName: string
   ): Promise<void> {
-    await promises.writeFile(`${path}${fileName}.groovy`, file);
+    await promises.writeFile(`${path}${fileName}`, file);
   }
 
   public async readFile(path: string): Promise<string> {

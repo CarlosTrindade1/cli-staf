@@ -15,15 +15,16 @@ const command: GluegunCommand = {
     }
 
     const scriptName = parameters.first;
+    const options = parameters.options;
 
     try {
       spinner.start();
 
-      const result = await scriptService.runScript(scriptName);
+      const result = await scriptService.runScript(scriptName, options);
 
       spinner.stop(true);
 
-      print.info(result);
+      if (result) print.info(result);
     } catch (error) {
       spinner.stop(true);
       print.error(error.message);
