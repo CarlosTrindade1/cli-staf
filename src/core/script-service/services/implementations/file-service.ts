@@ -15,8 +15,6 @@ export class FileService implements IFileService {
       encoding: 'utf-8',
     });
 
-    await this.writeNewFile(fileContent, './', 'teste.groovy');
-
     return fileContent;
   }
 }

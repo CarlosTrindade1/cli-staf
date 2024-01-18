@@ -75,7 +75,7 @@ export class ScriptService {
   }
 
   private async watchExecution(executionCode: string): Promise<boolean> {
-    return await new Promise((resolve, reject) => {
+    return await new Promise((resolve) => {
       const interval = setInterval(
         async (executionCode: string) => {
           if (
