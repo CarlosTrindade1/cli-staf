@@ -120,16 +120,30 @@ export class AxiosService implements IApiService {
       userAccess: string;
     }
   ): Promise<any> {
-    const { data } = await this.api.get(
-      `${this.logStreamBaseUrl}/${executionCode}/log-stream`,
-      {
+    let nextToken = '';
+    const events = [];
+
+    do {
+      let url = `${this.logStreamBaseUrl}/${executionCode}/log-stream`;
+
+      if (nextToken) {
+        url += `?nextToken=f%2F${nextToken}%2Fs`;
+      }
+
+      const { data } = await this.api.get(url, {
         headers: {
           authorization: credentials.token,
           'user-access': credentials.userAccess,
         },
-      }
-    );
+      });
 
-    return data;
+      nextToken = data.nextForwardToken;
+      console.log(nextToken);
+      events.push(...data.events);
+
+      if (nextToken) nextToken = nextToken.substring(2, 58);
+    } while (nextToken);
+
+    return events;
   }
 }
