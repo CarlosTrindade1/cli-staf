@@ -121,6 +121,7 @@ export class AxiosService implements IApiService {
     }
   ): Promise<any> {
     let nextToken = '';
+    let lastToken = '';
     const events = [];
 
     do {
@@ -137,11 +138,15 @@ export class AxiosService implements IApiService {
         },
       });
 
-      nextToken = data.nextForwardToken;
-      console.log(nextToken);
-      events.push(...data.events);
+      nextToken = data.nextForwardToken.substring(2, 58);
 
-      if (nextToken) nextToken = nextToken.substring(2, 58);
+      if (nextToken == lastToken) {
+        nextToken = '';
+      }
+
+      lastToken = nextToken;
+
+      events.push(...data.events);
     } while (nextToken);
 
     return events;

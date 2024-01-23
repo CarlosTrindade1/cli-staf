@@ -102,7 +102,7 @@ export class ScriptService {
 
     let content = '';
 
-    for (const event of response.events) {
+    for (const event of response) {
       content += event.message + '\n';
     }
 
